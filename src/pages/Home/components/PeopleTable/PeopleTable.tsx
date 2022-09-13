@@ -3,7 +3,7 @@ import { addFavorite } from '@/redux/states';
 import { AppStore } from '@/redux/store';
 import { Checkbox } from '@mui/material';
 import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 export interface PeopleTableInterface {}
@@ -13,11 +13,14 @@ const PeopleTable: React.FC<PeopleTableInterface> = () => {
 
 	const dispatch = useDispatch()
 	const statePeople = useSelector((store: AppStore) => store.people)
+	const favoritePeople = useSelector((store: AppStore) => store.favorites)
+
 
 	// if true, checkbox is checked
-	const findPerson = (person: Person) => !!selectedEmployee.find(employee => employee.id === person.id)
+	// !!: transforms the resolution of that method into true or false
+	const findPerson = (person: Person) => !!favoritePeople.find(employee => employee.id === person.id)
 
-	const filterPerson = (person: Person) => selectedEmployee.filter(employee => employee.id !== person.id)
+	const filterPerson = (person: Person) => favoritePeople.filter(employee => employee.id !== person.id)
 
 	const handleOnChange = (person: Person) => 
 	{
@@ -36,7 +39,6 @@ const PeopleTable: React.FC<PeopleTableInterface> = () => {
 			width: 15,
 			renderCell: (params: GridRenderCellParams) => <>
 				{
-					// !!: transforms the resolution of that method into true or false
 					<Checkbox  size='small'
 						checked={findPerson(params.row)}
 						onChange={() => handleOnChange(params.row)}
@@ -70,8 +72,22 @@ const PeopleTable: React.FC<PeopleTableInterface> = () => {
 			renderCell: (params: GridRenderCellParams) => <>
 				{params.value}
 			</>
+		},
+		{
+			field: 'levelOfHappiness',
+			headerName: 'Level of happiness',
+			flex: 1,
+			minWidth: 100,
+			renderCell: (params: GridRenderCellParams) => <>
+				{params.value}
+			</>
 		}
 	]
+
+	useEffect(() => {
+		setSelectedEmployee(favoritePeople)
+	}, [favoritePeople])
+
 	return (
 		<DataGrid
 			rows={statePeople}
