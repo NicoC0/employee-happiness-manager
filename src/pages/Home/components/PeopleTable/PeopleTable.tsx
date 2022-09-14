@@ -22,8 +22,7 @@ const PeopleTable: React.FC<PeopleTableInterface> = () => {
 
 	const filterPerson = (person: Person) => favoritePeople.filter(employee => employee.id !== person.id)
 
-	const handleOnChange = (person: Person) => 
-	{
+	const handleOnChange = (person: Person) => {
 		const filteredEmployee = findPerson(person) ? filterPerson(person) : [...selectedEmployee, person]
 		dispatch(addFavorite(filteredEmployee))
 		setSelectedEmployee(filteredEmployee)
@@ -32,17 +31,14 @@ const PeopleTable: React.FC<PeopleTableInterface> = () => {
 	const pageSize = 5;
 	const columns = [
 		{
-			field: 'action',
+			field: 'actions',
 			type: 'actions',
 			sortable: false,
 			headerName: '',
 			width: 15,
 			renderCell: (params: GridRenderCellParams) => <>
 				{
-					<Checkbox  size='small'
-						checked={findPerson(params.row)}
-						onChange={() => handleOnChange(params.row)}
-					/>
+					<>{<Checkbox size="small" checked={findPerson(params.row)} onChange={() => handleOnChange(params.row)} />}</>
 				}
 			</>
 		},
